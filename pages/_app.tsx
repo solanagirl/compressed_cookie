@@ -6,6 +6,7 @@ import { SolflareWalletAdapter, PhantomWalletAdapter } from '@solana/wallet-adap
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 //@ts-ignore
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
+require('@solana/wallet-adapter-react-ui/styles.css');
 
 function MyApp({ Component, pageProps }: AppProps) {
   const network = process.env.QN_DEVNET!;

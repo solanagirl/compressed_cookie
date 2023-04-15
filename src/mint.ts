@@ -345,7 +345,7 @@ export const createCompressedNFT = async(connection: any, wallet: WalletContextS
   const treeKeypair = Keypair.generate(); 
   const metadataArgs: MetadataArgs = {
     name: collection.name.slice(0,9),
-    symbol: 'RWO',
+    symbol: 'crumbs',
     uri: collection.uri,
     sellerFeeBasisPoints: collection.royalties,
     creators: [

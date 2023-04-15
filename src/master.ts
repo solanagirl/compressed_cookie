@@ -1,39 +1,31 @@
 import { Connection, PublicKey, TransactionMessage, VersionedTransaction, SystemProgram, Signer, TransactionInstruction, Keypair } from '@solana/web3.js';
 import { createInitializeMintInstruction, getAssociatedTokenAddress, createAssociatedTokenAccountInstruction, createMintToCheckedInstruction, TOKEN_PROGRAM_ID, MINT_SIZE } from '@solana/spl-token';
-import { createCreateMetadataAccountV3Instruction, createCreateMasterEditionV3Instruction, PROGRAM_ID, createApproveCollectionAuthorityInstruction} from '@metaplex-foundation/mpl-token-metadata';
+import { createCreateMetadataAccountV3Instruction, createCreateMasterEditionV3Instruction, PROGRAM_ID} from '@metaplex-foundation/mpl-token-metadata';
 import { Buffer } from 'buffer';
 //@ts-ignore
 import { Metaplex, toMetaplexFileFromBrowser, walletAdapterIdentity, bundlrStorage, BundlrStorageDriver } from '@metaplex-foundation/js';
 
-async function createMasterNFT(wallet: any, name: string, royalties: number, maxSupply: number, description: string, file: FileList, signTransaction: any) {
+async function createMasterNFT(wallet: any, pubkey:string, name: string, royalties: number, maxSupply: number, description: string, file: FileList, signTransaction: any) {
     window['Buffer'] = Buffer;
-    const connection = new Connection(process.env.QB_DEVNET!)
+    const connection = new Connection(process.env.QN_DEVNET!)
     let Blockhash = (await connection.getLatestBlockhash('finalized')).blockhash;
     const lastValidBlockHeight = (await connection.getBlockHeight('finalized'));
     const metaplex = new Metaplex(connection).use(walletAdapterIdentity(wallet)).use(bundlrStorage({
-        address: 'https://node1.bundlr.network/',
+        address: 'https://devnet.bundlr.network/',
         providerUrl: process.env.QN_DEVNET,
-        timeout: 60000,
+        timeout: 6000,
     }));;
     const bundlr = metaplex.storage().driver() as BundlrStorageDriver;
     
     const mint = Keypair.generate();
     const mint_signer:Signer = mint;
-    const creatorPubKey = new PublicKey(wallet.publicKey)
-    const rwo = new PublicKey(process.env.RWO_ADDRESS!);
-
+    const creatorPubKey = new PublicKey(pubkey);
     const associatedTokenPubkey = await getAssociatedTokenAddress(mint.publicKey, creatorPubKey);
 
     const tokenPubkey = PublicKey.findProgramAddressSync(
         [ Buffer.from('metadata'), PROGRAM_ID.toBuffer(), mint.publicKey.toBuffer()],
         PROGRAM_ID,
     )[0];
-
-    const collectionAuthority = PublicKey.findProgramAddressSync(
-        [ Buffer.from('metadata'), PROGRAM_ID.toBuffer(), mint.publicKey.toBuffer(), Buffer.from('collection_authority'), rwo.toBuffer()],
-        PROGRAM_ID,
-    )[0];
-
 
     const masterEditionPubKey = PublicKey.findProgramAddressSync(
         [Buffer.from("metadata"), PROGRAM_ID.toBuffer(), mint.publicKey.toBuffer(), Buffer.from('edition')],
@@ -45,7 +37,7 @@ async function createMasterNFT(wallet: any, name: string, royalties: number, max
     try {
         console.log('Create Image Metadata Instructions')
 
-        
+
         const metaplexImage = await toMetaplexFileFromBrowser(file[0]);
         const price = await bundlr.getUploadPriceForFiles([metaplexImage])
         await bundlr.fund(price);
@@ -57,7 +49,7 @@ async function createMasterNFT(wallet: any, name: string, royalties: number, max
             description: description,
             image: imageURI,
             attributes: {
-
+                email: 'true'
             }
         });
         
@@ -112,7 +104,7 @@ async function createMasterNFT(wallet: any, name: string, royalties: number, max
                 createMetadataAccountArgsV3: {
                     data: {
                         name: name.slice(0,9),
-                        symbol: 'RWO',
+                        symbol: 'crumbs',
                         uri: uri,
                         sellerFeeBasisPoints: royalties,
                         creators: [
@@ -154,20 +146,6 @@ async function createMasterNFT(wallet: any, name: string, royalties: number, max
           )
       
         token_transaction.push(initializeMasterEditionV3Instruction);
-
-        console.log('Delegate collection authority to RWO')
-        const approveCollectionAuthorityInstruction = createApproveCollectionAuthorityInstruction(
-            {
-                payer: creatorPubKey,
-                metadata: tokenPubkey,
-                mint: mint.publicKey,
-                collectionAuthorityRecord: collectionAuthority,
-                updateAuthority: creatorPubKey,
-                newCollectionAuthority: rwo,
-            }
-        )
-        token_transaction.push(approveCollectionAuthorityInstruction);
-
     
         let blockheight = await connection.getBlockHeight();
         let V0Message;
