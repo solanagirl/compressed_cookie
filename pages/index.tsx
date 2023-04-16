@@ -69,7 +69,9 @@ const Home: NextPage = () => {
             <meta name="description" content="Solana compressed nft cookies" />
             <link rel="icon" href="/favicon.ico" />
           </Head>
+          
           <main className='w-full h-screen flex flex-col gap-4 justify-center items-center bg-pink-200'>
+          <div className='bg-white p-4 rounded-md'>
             <h1 className='text-2xl font-black tracking-wide'>Create Compressed NFT cookies</h1>
             <WalletMultiButton />
             <div className='w-full flex flex-row justify-center items-start gap-4'>
@@ -79,8 +81,10 @@ const Home: NextPage = () => {
               <input type='file' onChange={(e) => setFile(e.currentTarget.files)} />
               <button className='w-fit h-fit bg-purple-200 px-2 rounded-l-full border-black border' type='submit' onClick={() => {create()}}>Create Cookie Template</button>
             </div>
+            </div>
           </main>
-        </div>
+          </div>
+        
       )
     case 'created':
       return (
