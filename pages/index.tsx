@@ -59,7 +59,10 @@ const Home: NextPage = () => {
   switch (state) {
     case 'loading': 
       return (
-        <div>Loading</div>
+        <main className='w-full min-h-screen flex flex-col gap-4 justify-center items-center bg-pink-200'>
+            <div className='bg-gradient-to-r from-indigo-600 via-blue-500 to-green-400 animate-spin w-16 h-16 border-8 border-t-8 rounded-full'> </div>
+            <div className="text-lg font-bold ml-4 py-4">Loading...</div>
+        </main>
       )
     case 'master':
       return (
@@ -69,22 +72,18 @@ const Home: NextPage = () => {
             <meta name="description" content="Solana compressed nft cookies" />
             <link rel="icon" href="/favicon.ico" />
           </Head>
-          
-          <main className='w-full h-screen flex flex-col gap-4 justify-center items-center bg-pink-200'>
-          <div className='bg-white p-4 rounded-md'>
-            <h1 className='text-2xl font-black tracking-wide'>Create Compressed NFT cookies</h1>
+          <main className='w-full min-h-screen flex flex-col gap-4 justify-center items-center bg-pink-200'>
+            <h1 className='text-2xl font-black tracking-wide my-1'>Create Compressed NFT cookies</h1>
             <WalletMultiButton />
-            <div className='w-full flex flex-row justify-center items-start gap-4'>
-              <input type='text' placeholder='Cookie Name' onChange={(e) => setName(e.currentTarget.value)}/>
-              <textarea className='rounded-2xl px-4 py-1 border-2 border-pink-300 shadow-xl' placeholder='Description' onChange={(e) => setDescription(e.currentTarget.value)}/>
-              <input type='number' placeholder='Max Supply' onChange={(e) => setMaxSupply(parseInt(e.currentTarget.value))}/>
-              <input type='file' onChange={(e) => setFile(e.currentTarget.files)} />
-              <button className='w-fit h-fit bg-purple-200 px-2 rounded-l-full border-black border' type='submit' onClick={() => {create()}}>Create Cookie Template</button>
-            </div>
+            <div className='w-full lg:w-1/2 flex flex-col justify-center items-center gap-4'>
+              <input type='text' className='rounded-2xl px-4 py-1 my-1' placeholder='Cookie Name' onChange={(e) => setName(e.currentTarget.value)}/>
+              <input type='number' className='rounded-2xl px-4 py-1 my-1' placeholder='Max Supply' onChange={(e) => setMaxSupply(parseInt(e.currentTarget.value))}/>
+              <textarea className='rounded-2xl px-4 py-1 my-1 border-0 h-2/5 border-pink-300 shadow-xl' placeholder='Description' onChange={(e) => setDescription(e.currentTarget.value)}/>
+              <input type='file' className='my-4 px-1 py-1' onChange={(e) => setFile(e.currentTarget.files)} />
+              <button className='w-fit h-fit bg-purple-200 rounded-2xl px-2 py-2 border-black border' type='submit' onClick={() => {createMaster()}}>Create Cookie Template</button>
             </div>
           </main>
-          </div>
-        
+        </div>
       )
     case 'created':
       return (
@@ -107,7 +106,7 @@ const Home: NextPage = () => {
               <span style={{fontWeight: 'bold', fontSize: '1.5em'}}>R</span> eusable <br/>
               <span style={{fontWeight: 'bold', fontSize: '1.5em'}}>U</span> nique <br/>
               <span style={{fontWeight: 'bold', fontSize: '1.5em'}}>M</span> etadata-based <br/>
-              <span style={{fontWeight: 'bold', fontSize: '1.5em'}}>B</span> lockchain-backed on<br/>
+              <span style={{fontWeight: 'bold', fontSize: '1.5em'}}>B</span> uild<br/>
               <span style={{fontWeight: 'bold', fontSize: '1.5em'}}>S</span> olana
             </p>
 
