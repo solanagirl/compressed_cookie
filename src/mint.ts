@@ -9,7 +9,9 @@ import {
     PublicKey,
     SystemProgram,
     Transaction,
-    sendAndConfirmTransaction,
+    TransactionInstruction,
+    TransactionMessage,
+    VersionedTransaction,
   } from "@solana/web3.js";
 
   import {
@@ -27,6 +29,7 @@ import { BN } from "@project-serum/anchor";
 import { bs58 } from "@project-serum/anchor/dist/cjs/utils/bytes";
 //@ts-ignore
 import { WalletContextState } from "@solana/wallet-adapter-react";
+import { Signer } from "@metaplex-foundation/js";
 
   
 export async function getBubblegumAuthorityPDA(merkleRollPubKey: PublicKey) {
@@ -86,6 +89,7 @@ export const getCompressedNftId = async (
   ) => {
     const payer = wallet.publicKey!;
     const space = getConcurrentMerkleTreeAccountSize(maxDepth, maxBufferSize);
+    let tx: TransactionInstruction[] = [];
     const [treeAuthority, _bump] = PublicKey.findProgramAddressSync(
       [treeKeypair.publicKey.toBuffer()],
       BUBBLEGUM_PROGRAM_ID
@@ -97,6 +101,7 @@ export const getCompressedNftId = async (
       space: space,
       programId: SPL_ACCOUNT_COMPRESSION_PROGRAM_ID,
     });
+    tx.push(allocTreeIx);
     const createTreeIx = createCreateTreeInstruction(
       {
         merkleTree: treeKeypair.publicKey,
@@ -113,20 +118,26 @@ export const getCompressedNftId = async (
       },
       BUBBLEGUM_PROGRAM_ID
     );
-    let tx = new Transaction().add(allocTreeIx).add(createTreeIx);
-    tx.feePayer = payer;
-    const signedTransaction = await wallet.signTransaction(tx, connection, {maxRetries: 5});
+    tx.push(createTreeIx);
+    let blockhash = (await connection.getLatestBlockhash('finalized')).blockhash;
+
+    const V0Message = new TransactionMessage({
+      payerKey: payer,
+      recentBlockhash: blockhash,
+      instructions: tx
+    }).compileToV0Message([]);
+
+    const transaction = new VersionedTransaction(V0Message);
+
+    const tree_signer:Signer = treeKeypair;
+    const signedTransaction = await wallet.signTransaction(transaction, connection, {maxRetries: 5});
+    signedTransaction.sign([tree_signer]);
     console.log('User Signed')
 
     try {
-      await sendAndConfirmTransaction(
-        connection,
+      await connection.sendTransaction(
         signedTransaction,
-        [treeKeypair ],
-        {
-          commitment: "confirmed",
-          skipPreflight: true,
-        }
+        {maxRetries: 5}
       );
       console.log(
         "Successfull created merkle tree for account: " + treeKeypair.publicKey
@@ -178,22 +189,19 @@ export const mintCompressedNft = async (
         }),
       }
     );
+    let blockhash = (await connection.getLatestBlockhash('finalized')).blockhash;
     const tx = new Transaction().add(mintIx);
     tx.feePayer = wallet.publicKey!;
+    tx.recentBlockhash = blockhash;
 
     const { signTransaction } = wallet;
     const signedTransaction = await signTransaction(tx, connection, {maxRetries: 5});
     console.log('User Signed')
 
     try {
-      const sig = await sendAndConfirmTransaction(
-        connection,
+      const sig = await connection.sendTransaction(
         signedTransaction,
-        [],
-        {
-          commitment: "confirmed",
-          skipPreflight: true,
-        }
+        {maxRetries: 5}
       );
       return sig;
     } catch (e) {
@@ -269,7 +277,7 @@ export const transferAsset = async (
     const tx = new Transaction().add(transferIx);
     tx.feePayer = owner.publicKey;
     try {
-      const sig = await sendAndConfirmTransaction(
+      const sig = await connection.sendAndConfirmTransaction(
         connection,
         tx,
         [owner],
@@ -325,7 +333,7 @@ export const transferAsset = async (
     const tx = new Transaction().add(redeemIx);
     tx.feePayer = owner.publicKey;
     try {
-      const sig = await sendAndConfirmTransaction(
+      const sig = await connection.sendAndConfirmTransaction(
         connection,
         tx,
         [owner],
@@ -343,6 +351,7 @@ export const transferAsset = async (
 
 export const createCompressedNFT = async(connection: any, wallet: WalletContextState, collection: any) => {
   const treeKeypair = Keypair.generate(); 
+  console.log(wallet)
   const metadataArgs: MetadataArgs = {
     name: collection.name.slice(0,9),
     symbol: 'crumbs',

@@ -41,17 +41,26 @@ const Home: NextPage = () => {
     if (signature) {
       setState('master_created')
     }
+    return signature;
   }
-
-  console.log(mintAddress);
-  console.log(metadataAddress);
-  console.log(masterTokenAddress);
-
+  
   async function createCompressedCookie() {
     const sig = await createCompressedNFT(connection, wallet, collection);
+    console.log(sig);
+  }
+
+  async function create() {
+    setState('loading');
+    await createMaster();
+    await createCompressedCookie();
+    setState('created');
   }
 
   switch (state) {
+    case 'loading': 
+      return (
+        <div>Loading</div>
+      )
     case 'master':
       return (
         <div className=''>
@@ -68,12 +77,12 @@ const Home: NextPage = () => {
               <textarea className='rounded-2xl px-4 py-1 border-2 border-pink-300 shadow-xl' placeholder='Description' onChange={(e) => setDescription(e.currentTarget.value)}/>
               <input type='number' placeholder='Max Supply' onChange={(e) => setMaxSupply(parseInt(e.currentTarget.value))}/>
               <input type='file' onChange={(e) => setFile(e.currentTarget.files)} />
-              <button className='w-fit h-fit bg-purple-200 px-2 rounded-l-full border-black border' type='submit' onClick={() => {createMaster()}}>Create Cookie Template</button>
+              <button className='w-fit h-fit bg-purple-200 px-2 rounded-l-full border-black border' type='submit' onClick={() => {create()}}>Create Cookie Template</button>
             </div>
           </main>
         </div>
       )
-    case 'master_created':
+    case 'created':
       return (
         <div>
           <main className='w-full h-screen flex flex-col gap-4 justify-center items-center bg-pink-200'>
