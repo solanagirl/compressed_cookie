@@ -32,7 +32,7 @@ const Home: NextPage = () => {
 
   async function createMaster() {
     wallet.connect();
-    const { signature, imageURI, mintPubkey, tokenPubkey, masterEditionPubKey } = await createMasterNFT(wallet, publicKey, name, 0, maxSupply, description, file, signTransaction);
+    const { signature, imageURI, mintPubkey, tokenPubkey, masterEditionPubKey } = await createMasterNFT(wallet, publicKey!, name, 0, maxSupply, description, file, signTransaction);
     console.log(signature)
     setUri(imageURI);
     setMintAddress(mintPubkey);

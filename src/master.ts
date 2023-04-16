@@ -5,7 +5,7 @@ import { Buffer } from 'buffer';
 //@ts-ignore
 import { Metaplex, toMetaplexFileFromBrowser, walletAdapterIdentity, bundlrStorage, BundlrStorageDriver } from '@metaplex-foundation/js';
 
-async function createMasterNFT(wallet: any, pubkey:string, name: string, royalties: number, maxSupply: number, description: string, file: FileList, signTransaction: any) {
+async function createMasterNFT(wallet: any, pubkey: PublicKey, name: string, royalties: number, maxSupply: number, description: string, file: FileList, signTransaction: any) {
     window['Buffer'] = Buffer;
     const connection = new Connection(process.env.QN_DEVNET!)
     let Blockhash = (await connection.getLatestBlockhash('finalized')).blockhash;
@@ -19,7 +19,7 @@ async function createMasterNFT(wallet: any, pubkey:string, name: string, royalti
     
     const mint = Keypair.generate();
     const mint_signer:Signer = mint;
-    const creatorPubKey = new PublicKey(pubkey);
+    const creatorPubKey = pubkey;
     const associatedTokenPubkey = await getAssociatedTokenAddress(mint.publicKey, creatorPubKey);
 
     const tokenPubkey = PublicKey.findProgramAddressSync(
@@ -37,7 +37,6 @@ async function createMasterNFT(wallet: any, pubkey:string, name: string, royalti
     try {
         console.log('Create Image Metadata Instructions')
 
-
         const metaplexImage = await toMetaplexFileFromBrowser(file[0]);
         const price = await bundlr.getUploadPriceForFiles([metaplexImage])
         await bundlr.fund(price);
@@ -48,9 +47,21 @@ async function createMasterNFT(wallet: any, pubkey:string, name: string, royalti
             name: name,
             description: description,
             image: imageURI,
-            attributes: {
-                email: 'true'
-            }
+            attributes: [
+                {
+                    trait_type: "wallet_address",
+                },
+                {
+                    trait_type: "session_data",
+                },
+                {
+                    trait_type: "email",
+                },
+                {
+                    trait_type: "duration",
+                    value: "24h"
+                },
+            ]
         });
         
         
@@ -165,7 +176,9 @@ async function createMasterNFT(wallet: any, pubkey:string, name: string, royalti
             }).compileToV0Message([]);    
         }
 
-    
+        console.log(Blockhash)
+        console.log(blockheight)
+
         const transaction = new VersionedTransaction(V0Message);
     
         const mintSign = transaction.sign([mint_signer]);
