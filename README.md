@@ -9,7 +9,7 @@ CRUMBS is a [LionHacks](https://lionhack.xyz/) project in the Solana track!
 
 📹 [Pitch Video](youtube.url)
 
-👀 [Slide Deck](/path/to/slide_deck.pdf)
+👀 [Slide Deck](public/Crumbs_LionHack_2023.pdf)
 
 <!-- Problems/challenges addressed -->
 
