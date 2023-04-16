@@ -17,8 +17,3 @@ CRUMBS is a [LionHacks](https://lionhack.xyz/) project in the Solana track!
 
 <!-- Why is this important to us? -->
 
-
-## The Team
-
-![team slide page](public/team.jpg)
-
