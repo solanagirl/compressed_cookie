@@ -39,7 +39,7 @@ const Home: NextPage = () => {
     setMetadataAddress(tokenPubkey);
     setMasterTokenAddress(masterEditionPubKey);
     if (signature) {
-      setState('master_created')
+      setState('created')
     }
     return signature;
   }
@@ -52,19 +52,26 @@ const Home: NextPage = () => {
   async function create() {
     setState('loading');
     await createMaster();
-    await createCompressedCookie();
-    setState('created');
+    // await createCompressedCookie();
   }
 
   switch (state) {
     case 'loading': 
       return (
-        <main className='w-full min-h-screen flex flex-col gap-4 justify-center items-center bg-pink-200'>
+        <main className='w-full min-h-screen flex flex-col gap-4 justify-center items-center bg-[#d3d3d3]'>
             <div className='bg-gradient-to-r from-indigo-600 via-blue-500 to-green-400 animate-spin w-16 h-16 border-8 border-t-8 rounded-full'> </div>
             <div className="text-lg font-bold ml-4 py-4">Loading...</div>
         </main>
       )
-    case 'master':
+    case 'created':
+      return (
+        <div>
+          <main className='w-full h-screen flex flex-col gap-4 justify-center items-center bg-[#d3d3d3]'>
+            <h1 className='text-2xl font-black tracking-wide'>Successfully created compressed NFT!</h1>
+          </main>          
+        </div>
+      )
+    default: 
       return (
         <div className=''>
           <Head>
@@ -72,47 +79,21 @@ const Home: NextPage = () => {
             <meta name="description" content="Solana compressed nft cookies" />
             <link rel="icon" href="/favicon.ico" />
           </Head>
-          <main className='w-full min-h-screen flex flex-col gap-4 justify-center items-center bg-pink-200'>
-            <h1 className='text-2xl font-black tracking-wide my-1'>Create Compressed NFT cookies</h1>
-            <WalletMultiButton />
-            <div className='w-full lg:w-1/2 flex flex-col justify-center items-center gap-4'>
+          <main className='w-full min-h-screen flex flex-col gap-4 justify-center items-center bg-[#d3d3d3]'>
+            <h1 className='text-2xl font-black text-white text-4xl tracking-wide'>Compress a Cookie into Crumbs</h1>
+            <div className='w-full lg:w-1/2 bg-pink-100 shadow-lg flex flex-col rounded-2xl justify-center items-center gap-4 py-8'>
               <input type='text' className='rounded-2xl px-4 py-1 my-1' placeholder='Cookie Name' onChange={(e) => setName(e.currentTarget.value)}/>
-              <input type='number' className='rounded-2xl px-4 py-1 my-1' placeholder='Max Supply' onChange={(e) => setMaxSupply(parseInt(e.currentTarget.value))}/>
-              <textarea className='rounded-2xl px-4 py-1 my-1 border-0 h-2/5 border-pink-300 shadow-xl' placeholder='Description' onChange={(e) => setDescription(e.currentTarget.value)}/>
-              <input type='file' className='my-4 px-1 py-1' onChange={(e) => setFile(e.currentTarget.files)} />
-              <button className='w-fit h-fit bg-purple-200 rounded-2xl px-2 py-2 border-black border' type='submit' onClick={() => {createMaster()}}>Create Cookie Template</button>
+              <input type='number' className='rounded-2xl px-4 py-1 my-1' placeholder='Quantity' onChange={(e) => setMaxSupply(parseInt(e.currentTarget.value))}/>
+              <textarea className='rounded-2xl px-6 py-1 my-1 border-0 h-3/5 border-pink-300 shadow-xl' placeholder='Description' onChange={(e) => setDescription(e.currentTarget.value)}/>
+              <div className='inline-flex w-1/2 justify-between items-center'>
+                <input type='file' className='my-4 px-1 py-1' onChange={(e) => setFile(e.currentTarget.files)} />
+                <WalletMultiButton />
+              </div>
+              <button className='w-fit h-fit bg-[#dafab0] px-6 rounded-2xl py-2 border-black border-2 shadow-mint' type='submit' onClick={() => {create()}}>Compress</button>
             </div>
           </main>
         </div>
-      )
-    case 'created':
-      return (
-        <div>
-          <main className='w-full h-screen flex flex-col gap-4 justify-center items-center bg-pink-200'>
-            <h1 className='text-2xl font-black tracking-wide'>Successfully created compressed NFT!</h1>
-          </main>          
-        </div>
-      )
-    
-    default: 
-      return (
-        <div className="flex flex-col items-center justify-center h-screen bg-purple-50" style={{backgroundImage: "url('../public/homepage_bg.jpg')"}}>
-          <h1 className="text-4xl font-bold text-purple-900 mb-12">Welcome to Crumbs</h1>
-          <div className='w-fit h-fit rounded-2xl cursor-pointer bg-purple-300 px-2 py-1 text-2xl mb-2' onClick={() => setState('master')}>Create Cookie Template</div>
-          <div className="max-w-4xl mt-12 bg-purple-300 rounded-lg p-8 shadow-lg">
-            <h2 className="text-2xl font-bold mb-4">Discover Decentralized Cookies</h2>
-            <p className="text-gray-600">
-              <span style={{fontWeight: 'bold', fontSize: '1.5em'}}>C</span> ryptographically-secure <br/>
-              <span style={{fontWeight: 'bold', fontSize: '1.5em'}}>R</span> eusable <br/>
-              <span style={{fontWeight: 'bold', fontSize: '1.5em'}}>U</span> nique <br/>
-              <span style={{fontWeight: 'bold', fontSize: '1.5em'}}>M</span> etadata-based <br/>
-              <span style={{fontWeight: 'bold', fontSize: '1.5em'}}>B</span> uild<br/>
-              <span style={{fontWeight: 'bold', fontSize: '1.5em'}}>S</span> olana
-            </p>
-
-          </div>
-        </div>
-      ) 
+    )
   }
 }
 
