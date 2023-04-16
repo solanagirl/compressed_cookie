@@ -130,7 +130,8 @@ export const getCompressedNftId = async (
     const transaction = new VersionedTransaction(V0Message);
 
     const tree_signer:Signer = treeKeypair;
-    const signedTransaction = await wallet.signTransaction(transaction, connection, {maxRetries: 5});
+    //@ts-ignore
+    const signedTransaction = await wallet.signTransaction(transaction);
     signedTransaction.sign([tree_signer]);
     console.log('User Signed')
 
@@ -195,7 +196,8 @@ export const mintCompressedNft = async (
     tx.recentBlockhash = blockhash;
 
     const { signTransaction } = wallet;
-    const signedTransaction = await signTransaction(tx, connection, {maxRetries: 5});
+    //@ts-ignore
+    const signedTransaction = await wallet.signTransaction(tx);
     console.log('User Signed')
 
     try {
