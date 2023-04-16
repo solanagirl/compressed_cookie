@@ -59,7 +59,10 @@ const Home: NextPage = () => {
   switch (state) {
     case 'loading': 
       return (
-        <div>Loading</div>
+        <main className='w-full min-h-screen flex flex-col gap-4 justify-center items-center bg-pink-200'>
+            <div className='bg-gradient-to-r from-indigo-600 via-blue-500 to-green-400 animate-spin w-16 h-16 border-8 border-t-8 rounded-full'> </div>
+            <div className="text-lg font-bold ml-4 py-4">Loading...</div>
+        </main>
       )
     case 'master':
       return (
