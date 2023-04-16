@@ -84,9 +84,21 @@ const Home: NextPage = () => {
     
     default: 
       return (
-        <div>
-          <p>Welcome to crumbs</p>
-          <div className='w-fit h-fit rounded-2xl cursor-pointer bg-purple-200 px-2 py-1 text-2xl' onClick={() => setState('master')}>Create Cookie Template</div>
+        <div className="flex flex-col items-center justify-center h-screen bg-purple-50" style={{backgroundImage: "url('../public/homepage_bg.jpg')"}}>
+          <h1 className="text-4xl font-bold text-purple-900 mb-12">Welcome to Crumbs</h1>
+          <div className='w-fit h-fit rounded-2xl cursor-pointer bg-purple-300 px-2 py-1 text-2xl mb-2' onClick={() => setState('master')}>Create Cookie Template</div>
+          <div className="max-w-4xl mt-12 bg-purple-300 rounded-lg p-8 shadow-lg">
+            <h2 className="text-2xl font-bold mb-4">Discover Decentralized Cookies</h2>
+            <p className="text-gray-600">
+              <span style={{fontWeight: 'bold', fontSize: '1.5em'}}>C</span> ryptographically-secure <br/>
+              <span style={{fontWeight: 'bold', fontSize: '1.5em'}}>R</span> eusable <br/>
+              <span style={{fontWeight: 'bold', fontSize: '1.5em'}}>U</span> nique <br/>
+              <span style={{fontWeight: 'bold', fontSize: '1.5em'}}>M</span> etadata-based <br/>
+              <span style={{fontWeight: 'bold', fontSize: '1.5em'}}>B</span> lockchain-backed on<br/>
+              <span style={{fontWeight: 'bold', fontSize: '1.5em'}}>S</span> olana
+            </p>
+
+          </div>
         </div>
       ) 
   }
