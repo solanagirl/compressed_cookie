@@ -7,13 +7,21 @@ CRUMBS is a [LionHacks](https://lionhack.xyz/) project in the Solana track!
 
 <!-- VIDEO -->
 
-📹 [Pitch Video](https://www.youtube.com/watch?v=snR7ikIc4ic)
+📹 [Pitch Video](https://www.youtube.com/watch?v=snR7ikIc4ic&feature=youtu.be)
 
-👀 [Slide Deck](https://www.canva.com/design/DAFgMYNIP2g/E3Zojj3PybpcSt9a-yzPMA/edit?utm_content=DAFgMYNIP2g&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+👀 [Slide Deck](public/Crumbs_slidedeck.pdf)
 
 <!-- Problems/challenges addressed -->
 
 <!-- The solution -->
 
 <!-- Why is this important to us? -->
+
+## Business Model
+
+## The Team
+
+![team slide page](public/team.png)
+
+
 
